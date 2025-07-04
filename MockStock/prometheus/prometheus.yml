@@ -1,0 +1,36 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+# - "first_rules.yml"
+# - "second_rules.yml"
+
+scrape_configs:
+  # Prometheus 자체 모니터링
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # 시스템 메트릭 (CPU, 메모리, 디스크 등)
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+
+  # Docker 컨테이너 메트릭
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+
+  # Nginx 메트릭 (nginx-prometheus-exporter 사용 시)
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx:9113']
+    # 이 설정은 nginx에 prometheus exporter를 추가했을 때 사용
+
+  # Spring Boot 애플리케이션 메트릭 (Actuator 사용 시)
+  - job_name: 'mockstock-app'
+    static_configs:
+      - targets: ['MockStock-app:8080']
+    metrics_path: '/actuator/prometheus'
+    # Spring Boot에서 management.endpoints.web.exposure.include=prometheus 설정 필요
